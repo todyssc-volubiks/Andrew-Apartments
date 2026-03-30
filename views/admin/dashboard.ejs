@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Andrew Apartments</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+  <div class="admin-container">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-header">
+        <h2>🏠 Admin Panel</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/admin/dashboard" class="nav-item active">📊 Dashboard</a>
+        <a href="#" class="nav-item" onclick="showSection('apartments')">🏢 Apartments</a>
+        <a href="#" class="nav-item" onclick="showSection('orders')">📦 Orders</a>
+        <a href="#" class="nav-item" onclick="showSection('scripts')">⚙️ Scripts</a>
+        <a href="/" class="nav-item">← Back to Site</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <!-- Dashboard Tab -->
+      <section id="section-dashboard" class="admin-section active">
+        <h1>Dashboard</h1>
+        <div class="stats">
+          <div class="stat-card">
+            <span class="stat-icon">🏢</span>
+            <span class="stat-label">Total Apartments</span>
+            <span class="stat-value"><%= apartments.length %></span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">📦</span>
+            <span class="stat-label">Total Orders</span>
+            <span class="stat-value"><%= orders.length %></span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">💰</span>
+            <span class="stat-label">Total Value</span>
+            <span class="stat-value">$<%= apartments.reduce((sum, apt) => sum + apt.price, 0).toLocaleString() %></span>
+          </div>
+        </div>
+
+        <h2>Recent Orders</h2>
+        <% if (orders && orders.length > 0) { %>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Customer</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% orders.forEach(order => { %>
+              <tr>
+                <td>#<%= order.id %></td>
+                <td><%= order.customer_name %></td>
+                <td>$<%= order.total_price.toLocaleString() %></td>
+                <td><span class="status-badge <%= order.status %>"><%= order.status %></span></td>
+                <td><%= new Date(order.created_at).toLocaleDateString() %></td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        <% } else { %>
+          <p>No orders yet.</p>
+        <% } %>
+      </section>
+
+      <!-- Apartments Tab -->
+      <section id="section-apartments" class="admin-section">
+        <h1>Manage Apartments</h1>
+        
+        <div class="add-form">
+          <h2>Add New Apartment</h2>
+          <form id="addApartmentForm">
+            <input type="text" name="title" placeholder="Title" required>
+            <textarea name="description" placeholder="Description" required></textarea>
+            <input type="number" name="price" placeholder="Price" required>
+            <select name="category" required>
+              <option value="">Select Category</option>
+              <option value="Rent">Rent</option>
+              <option value="Serviced">Serviced</option>
+              <option value="Sales">Sales</option>
+            </select>
+            <input type="number" name="bedrooms" placeholder="Bedrooms">
+            <input type="number" name="bathrooms" placeholder="Bathrooms" required>
+            <input type="text" name="location" placeholder="Location" required>
+            <input type="text" name="image_url" placeholder="Image URL">
+            <input type="text" name="features" placeholder="Features (comma-separated)">
+            <button type="submit" class="btn btn-primary">Add Apartment</button>
+          </form>
+        </div>
+
+        <h2>All Apartments</h2>
+        <% if (apartments && apartments.length > 0) { %>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Location</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% apartments.forEach(apt => { %>
+              <tr>
+                <td><%= apt.title %></td>
+                <td><span class="badge"><%= apt.category %></span></td>
+                <td>$<%= apt.price.toLocaleString() %></td>
+                <td><%= apt.location %></td>
+                <td>
+                  <button class="btn btn-small edit-btn" onclick="editApartment(<%= apt.id %>)">Edit</button>
+                  <button class="btn btn-small btn-danger" onclick="deleteApartment(<%= apt.id %>)">Delete</button>
+                </td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        <% } else { %>
+          <p>No apartments added yet.</p>
+        <% } %>
+      </section>
+
+      <!-- Orders Tab -->
+      <section id="section-orders" class="admin-section">
+        <h1>Manage Orders</h1>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Customer</th>
+              <th>Email</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% orders.forEach(order => { %>
+            <tr>
+              <td>#<%= order.id %></td>
+              <td><%= order.customer_name %></td>
+              <td><%= order.customer_email %></td>
+              <td>$<%= order.total_price.toLocaleString() %></td>
+              <td><span class="status-badge <%= order.status %>"><%= order.status %></span></td>
+              <td><%= new Date(order.created_at).toLocaleDateString() %></td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Scripts Tab -->
+      <section id="section-scripts" class="admin-section">
+        <h1>Run Custom Scripts</h1>
+        <p>Execute backend scripts for operations like batch updates, data processing, etc.</p>
+        
+        <div class="script-executor">
+          <h2>Script Console</h2>
+          <textarea id="scriptInput" placeholder="Enter your script here..." rows="10"></textarea>
+          <button class="btn btn-primary" onclick="runScript()">Execute Script</button>
+          <div id="scriptOutput" class="script-output"></div>
+        </div>
+
+        <div class="script-examples">
+          <h2>Example Scripts</h2>
+          <div class="example">
+            <h3>Update All Prices (10% increase)</h3>
+            <code>updateAllPrices(1.1)</code>
+          </div>
+          <div class="example">
+            <h3>Generate Report</h3>
+            <code>generateReport('monthly')</code>
+          </div>
+          <div class="example">
+            <h3>Bulk Update Status</h3>
+            <code>updateStatus('all', 'available')</code>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/js/admin.js"></script>
+  <script>
+    function showSection(sectionId) {
+      document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+      document.getElementById('section-' + sectionId).classList.add('active');
+      document.querySelectorAll('.sidebar-nav .nav-item').forEach(n => n.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+
+    document.getElementById('addApartmentForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData);
+      
+      const response = await fetch('/admin/add-apartment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      
+      if (response.ok) {
+        alert('Apartment added successfully!');
+        this.reset();
+        location.reload();
+      }
+    });
+
+    function deleteApartment(id) {
+      if (confirm('Are you sure?')) {
+        fetch('/admin/delete-apartment/' + id, { method: 'POST' })
+          .then(() => location.reload());
+      }
+    }
+
+    function runScript() {
+      const script = document.getElementById('scriptInput').value;
+      const output = document.getElementById('scriptOutput');
+      
+      output.innerHTML = '<p class="running">Executing...</p>';
+      
+      fetch('/admin/run-script', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ script })
+      })
+      .then(res => res.json())
+      .then(data => {
+        output.innerHTML = '<p class="success">' + (data.message || 'Script executed') + '</p>';
+      })
+      .catch(err => {
+        output.innerHTML = '<p class="error">Error: ' + err.message + '</p>';
+      });
+    }
+  </script>
+</body>
+</html>

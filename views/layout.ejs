@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> - Andrew Apartments</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-container">
+      <div class="logo">
+        <a href="/">🏠 ANDREW APARTMENTS</a>
+      </div>
+      <div class="search-bar">
+        <form action="/search" method="GET">
+          <input type="text" name="q" placeholder="Search apartments..." required>
+          <select name="category">
+            <option value="">All Categories</option>
+            <option value="Rent">Rent</option>
+            <option value="Serviced">Serviced</option>
+            <option value="Sales">Sales</option>
+          </select>
+          <button type="submit">🔍 Search</button>
+        </form>
+      </div>
+      <nav class="nav-menu">
+        <a href="/rent" class="nav-link">🏠 Rent</a>
+        <a href="/serviced" class="nav-link">⭐ Serviced</a>
+        <a href="/sales" class="nav-link">🏡 Sales</a>
+        <a href="/cart" class="nav-link cart-link">
+          🛒 Cart <% if (cartCount > 0) { %><span class="cart-badge"><%= cartCount %></span><% } %>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <%- body %>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>Andrew Apartments</h3>
+        <p>Your trusted real estate partner for quality homes.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="/rent">Rent</a></li>
+          <li><a href="/serviced">Serviced Apartments</a></li>
+          <li><a href="/sales">Sales</a></li>
+          <li><a href="/admin/dashboard">Admin</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <p>📧 Email: info@andrewaps.com</p>
+        <p>📞 Phone: +1 (555) 123-4567</p>
+        <p>📍 Address: 123 Real Estate Ave, Your City</p>
+      </div>
+      <div class="footer-section">
+        <h4>Follow Us</h4>
+        <div class="social-links">
+          <a href="#">Facebook</a>
+          <a href="#">Twitter</a>
+          <a href="#">Instagram</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Andrew Apartments. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

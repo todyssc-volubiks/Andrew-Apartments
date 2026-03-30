@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> - Andrew Apartments</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-container">
+      <div class="logo">
+        <a href="/">🏠 ANDREW APARTMENTS</a>
+      </div>
+      <div class="search-bar">
+        <form action="/search" method="GET">
+          <input type="text" name="q" placeholder="Search apartments...">
+          <select name="category">
+            <option value="">All Categories</option>
+            <option value="Rent">Rent</option>
+            <option value="Serviced">Serviced</option>
+            <option value="Sales">Sales</option>
+          </select>
+          <button type="submit">🔍 Search</button>
+        </form>
+      </div>
+      <nav class="nav-menu">
+        <a href="/rent" class="nav-link">🏠 Rent</a>
+        <a href="/serviced" class="nav-link">⭐ Serviced</a>
+        <a href="/sales" class="nav-link">🏡 Sales</a>
+        <a href="/cart" class="nav-link cart-link">
+          🛒 Cart <% if (cartCount > 0) { %><span class="cart-badge"><%= cartCount %></span><% } %>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Welcome to Andrew Apartments</h1>
+      <p>Find Your Perfect Home</p>
+      <div class="hero-buttons">
+        <a href="/rent" class="btn btn-primary">🏠 Browse Rentals</a>
+        <a href="/sales" class="btn btn-secondary">🏡 View For Sale</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories Section -->
+  <section class="categories">
+    <div class="container">
+      <h2>Our Services</h2>
+      <div class="category-grid">
+        <div class="category-card">
+          <h3>🏠 Rental Apartments</h3>
+          <p>Find affordable short and long-term rental options for every budget.</p>
+          <a href="/rent" class="btn btn-outline">Browse Rentals</a>
+        </div>
+        <div class="category-card">
+          <h3>⭐ Serviced Apartments</h3>
+          <p>Luxury serviced apartments with premium amenities and housekeeping.</p>
+          <a href="/serviced" class="btn btn-outline">View Serviced</a>
+        </div>
+        <div class="category-card">
+          <h3>🏡 Properties for Sale</h3>
+          <p>Invest in your dream property from our selection of premium homes.</p>
+          <a href="/sales" class="btn btn-outline">Explore Sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Apartments -->
+  <% if (apartments && apartments.length > 0) { %>
+  <section class="featured">
+    <div class="container">
+      <h2>Featured Apartments</h2>
+      <div class="apartments-grid">
+        <% apartments.forEach(apt => { %>
+        <div class="apartment-card">
+          <div class="apartment-image">
+            <img src="<%= apt.image_url %>" alt="<%= apt.title %>">
+            <span class="category-badge"><%= apt.category %></span>
+          </div>
+          <div class="apartment-info">
+            <h3><%= apt.title %></h3>
+            <p class="location">📍 <%= apt.location %></p>
+            <p class="description"><%= apt.description.substring(0, 80) %>...</p>
+            <div class="apartment-details">
+              <% if (apt.bedrooms > 0) { %><span>🛏️ <%= apt.bedrooms %> BR</span><% } %>
+              <span>🚿 <%= apt.bathrooms %> BA</span>
+            </div>
+            <div class="apartment-footer">
+              <span class="price">$<%= apt.price.toLocaleString() %></span>
+              <a href="/<%= apt.category.toLowerCase() %>/<%= apt.id %>" class="btn btn-small">View Details</a>
+            </div>
+          </div>
+        </div>
+        <% }); %>
+      </div>
+    </div>
+  </section>
+  <% } %>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>Andrew Apartments</h3>
+        <p>Your trusted real estate partner for quality homes.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="/rent">Rent</a></li>
+          <li><a href="/serviced">Serviced Apartments</a></li>
+          <li><a href="/sales">Sales</a></li>
+          <li><a href="/admin/dashboard">Admin</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <p>📧 Email: info@andrewaps.com</p>
+        <p>📞 Phone: +1 (555) 123-4567</p>
+        <p>📍 Address: 123 Real Estate Ave, Your City</p>
+      </div>
+      <div class="footer-section">
+        <h4>Follow Us</h4>
+        <div class="social-links">
+          <a href="#">Facebook</a>
+          <a href="#">Twitter</a>
+          <a href="#">Instagram</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Andrew Apartments. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

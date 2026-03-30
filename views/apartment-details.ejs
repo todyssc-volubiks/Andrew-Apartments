@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= apartment.title %> - Andrew Apartments</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-container">
+      <div class="logo">
+        <a href="/">🏠 ANDREW APARTMENTS</a>
+      </div>
+      <div class="search-bar">
+        <form action="/search" method="GET">
+          <input type="text" name="q" placeholder="Search apartments...">
+          <select name="category">
+            <option value="">All Categories</option>
+            <option value="Rent">Rent</option>
+            <option value="Serviced">Serviced</option>
+            <option value="Sales">Sales</option>
+          </select>
+          <button type="submit">🔍 Search</button>
+        </form>
+      </div>
+      <nav class="nav-menu">
+        <a href="/rent" class="nav-link">🏠 Rent</a>
+        <a href="/serviced" class="nav-link">⭐ Serviced</a>
+        <a href="/sales" class="nav-link">🏡 Sales</a>
+        <a href="/cart" class="nav-link cart-link">
+          🛒 Cart <% if (cartCount > 0) { %><span class="cart-badge"><%= cartCount %></span><% } %>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Apartment Details -->
+  <section class="apartment-details-section">
+    <div class="container">
+      <div class="apartment-details-container">
+        <div class="apartment-gallery">
+          <img src="<%= apartment.image_url %>" alt="<%= apartment.title %>" class="main-image">
+          <div class="gallery-thumbs">
+            <img src="<%= apartment.image_url %>" alt="Photo 1" class="thumb">
+          </div>
+        </div>
+
+        <div class="apartment-details-info">
+          <div class="details-header">
+            <h1><%= apartment.title %></h1>
+            <span class="category-badge"><%= apartment.category %></span>
+          </div>
+
+          <p class="location-large">📍 <%= apartment.location %></p>
+
+          <div class="price-section">
+            <h2 class="price-large">$<%= apartment.price.toLocaleString() %></h2>
+            <p class="price-subtitle">
+              <% if (apartment.category === 'Rent') { %>per month<% } else if (apartment.category === 'Serviced') { %>per night<% } else { %>asking price<% } %>
+            </p>
+          </div>
+
+          <div class="features-grid">
+            <% if (apartment.bedrooms > 0) { %>
+            <div class="feature">
+              <span class="feature-icon">🛏️</span>
+              <span class="feature-name">Bedrooms</span>
+              <span class="feature-value"><%= apartment.bedrooms %></span>
+            </div>
+            <% } %>
+            <div class="feature">
+              <span class="feature-icon">🚿</span>
+              <span class="feature-name">Bathrooms</span>
+              <span class="feature-value"><%= apartment.bathrooms %></span>
+            </div>
+          </div>
+
+          <div class="description-section">
+            <h3>Description</h3>
+            <p><%= apartment.description %></p>
+          </div>
+
+          <div class="amenities-section">
+            <h3>Amenities & Features</h3>
+            <div class="amenities-list">
+              <% if (apartment.features) { 
+                const features = apartment.features.split(',');
+                features.forEach(feature => { %>
+                <div class="amenity-item">✓ <%= feature.trim() %></div>
+              <% });
+              } %>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button id="addToCartBtn" class="btn btn-primary" data-id="<%= apartment.id %>">
+              🛒 Add to Cart
+            </button>
+            <button id="inquireBtn" class="btn btn-secondary">
+              📧 Make Inquiry
+            </button>
+          </div>
+
+          <div class="contact-info">
+            <h3>Contact Information</h3>
+            <p>📧 Email: info@andrewaps.com</p>
+            <p>📞 Phone: +1 (555) 123-4567</p>
+            <p>For inquiries about this property, please reach out to us.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="back-link">
+        <a href="/<%= category.toLowerCase() %>">&larr; Back to <%= category %></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>Andrew Apartments</h3>
+        <p>Your trusted real estate partner for quality homes.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="/rent">Rent</a></li>
+          <li><a href="/serviced">Serviced Apartments</a></li>
+          <li><a href="/sales">Sales</a></li>
+          <li><a href="/admin/dashboard">Admin</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <p>📧 Email: info@andrewaps.com</p>
+        <p>📞 Phone: +1 (555) 123-4567</p>
+        <p>📍 Address: 123 Real Estate Ave, Your City</p>
+      </div>
+      <div class="footer-section">
+        <h4>Follow Us</h4>
+        <div class="social-links">
+          <a href="#">Facebook</a>
+          <a href="#">Twitter</a>
+          <a href="#">Instagram</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Andrew Apartments. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script>
+    document.getElementById('addToCartBtn').addEventListener('click', function() {
+      const apartmentId = this.dataset.id;
+      fetch('/cart/add/' + apartmentId, { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert('✓ Added to cart!');
+            location.reload();
+          }
+        });
+    });
+
+    document.getElementById('inquireBtn').addEventListener('click', function() {
+      alert('Thank you for your interest! Our team will contact you soon.');
+    });
+  </script>
+</body>
+</html>

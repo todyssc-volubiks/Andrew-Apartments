@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>500 - Server Error</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-container">
+      <div class="logo">
+        <a href="/">🏠 ANDREW APARTMENTS</a>
+      </div>
+      <nav class="nav-menu">
+        <a href="/rent" class="nav-link">🏠 Rent</a>
+        <a href="/serviced" class="nav-link">⭐ Serviced</a>
+        <a href="/sales" class="nav-link">🏡 Sales</a>
+        <a href="/cart" class="nav-link cart-link">🛒 Cart</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 500 Content -->
+  <section class="error-section">
+    <div class="container">
+      <div class="error-content">
+        <h1>500</h1>
+        <h2>Server Error</h2>
+        <p>Sorry, something went wrong on our server.</p>
+        <p class="error-message"><%= error %></p>
+        <a href="/" class="btn btn-primary">Back to Home</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>Andrew Apartments</h3>
+        <p>Your trusted real estate partner for quality homes.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Andrew Apartments. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>

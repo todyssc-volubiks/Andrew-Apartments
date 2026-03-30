@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart - Andrew Apartments</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-container">
+      <div class="logo">
+        <a href="/">🏠 ANDREW APARTMENTS</a>
+      </div>
+      <div class="search-bar">
+        <form action="/search" method="GET">
+          <input type="text" name="q" placeholder="Search apartments...">
+          <select name="category">
+            <option value="">All Categories</option>
+            <option value="Rent">Rent</option>
+            <option value="Serviced">Serviced</option>
+            <option value="Sales">Sales</option>
+          </select>
+          <button type="submit">🔍 Search</button>
+        </form>
+      </div>
+      <nav class="nav-menu">
+        <a href="/rent" class="nav-link">🏠 Rent</a>
+        <a href="/serviced" class="nav-link">⭐ Serviced</a>
+        <a href="/sales" class="nav-link">🏡 Sales</a>
+        <a href="/cart" class="nav-link cart-link">
+          🛒 Cart <% if (cartCount > 0) { %><span class="cart-badge"><%= cartCount %></span><% } %>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Shopping Cart -->
+  <section class="cart-section">
+    <div class="container">
+      <h1>🛒 Shopping Cart</h1>
+
+      <% if (cartCount > 0) { %>
+        <div class="cart-content">
+          <div class="cart-items">
+            <table class="cart-table">
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Total</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="cartTableBody">
+                <% cart.forEach(item => { %>
+                <tr data-id="<%= item.id %>">
+                  <td><%= item.title %></td>
+                  <td><span class="badge"><%= item.category %></span></td>
+                  <td>$<%= item.price.toLocaleString() %></td>
+                  <td>
+                    <input type="number" class="qty-input" value="<%= item.quantity %>" min="1" data-id="<%= item.id %>">
+                  </td>
+                  <td class="item-total">$<%= (item.price * item.quantity).toLocaleString() %></td>
+                  <td>
+                    <button class="btn btn-small btn-danger remove-btn" data-id="<%= item.id %>">Remove</button>
+                  </td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="cart-summary">
+            <h3>Order Summary</h3>
+            <div class="summary-item">
+              <span>Subtotal:</span>
+              <span id="subtotal">$0</span>
+            </div>
+            <div class="summary-item">
+              <span>Tax (10%):</span>
+              <span id="tax">$0</span>
+            </div>
+            <div class="summary-item total">
+              <span>Total:</span>
+              <span id="total">$0</span>
+            </div>
+            <button class="btn btn-primary btn-full" onclick="checkout()">Proceed to Checkout</button>
+            <a href="/" class="btn btn-outline btn-full">Continue Shopping</a>
+          </div>
+        </div>
+      <% } else { %>
+        <div class="empty-cart">
+          <p>Your cart is empty</p>
+          <a href="/" class="btn btn-primary">Start Shopping</a>
+        </div>
+      <% } %>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>Andrew Apartments</h3>
+        <p>Your trusted real estate partner for quality homes.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="/rent">Rent</a></li>
+          <li><a href="/serviced">Serviced Apartments</a></li>
+          <li><a href="/sales">Sales</a></li>
+          <li><a href="/admin/dashboard">Admin</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <p>📧 Email: info@andrewaps.com</p>
+        <p>📞 Phone: +1 (555) 123-4567</p>
+        <p>📍 Address: 123 Real Estate Ave, Your City</p>
+      </div>
+      <div class="footer-section">
+        <h4>Follow Us</h4>
+        <div class="social-links">
+          <a href="#">Facebook</a>
+          <a href="#">Twitter</a>
+          <a href="#">Instagram</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Andrew Apartments. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script>
+    function updateCart() {
+      const subtotal = Array.from(document.querySelectorAll('tr[data-id]')).reduce((sum, row) => {
+        const priceText = row.querySelector('td:nth-child(3)').innerText.replace('$', '').replace(/,/g, '');
+        const qty = parseInt(row.querySelector('.qty-input').value) || 1;
+        return sum + (parseFloat(priceText) * qty);
+      }, 0);
+
+      const tax = subtotal * 0.1;
+      const total = subtotal + tax;
+
+      document.getElementById('subtotal').innerText = '$' + subtotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      document.getElementById('tax').innerText = '$' + tax.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      document.getElementById('total').innerText = '$' + total.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    }
+
+    document.querySelectorAll('.qty-input').forEach(input => {
+      input.addEventListener('change', function() {
+        const id = this.dataset.id;
+        fetch('/cart/update/' + id, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ quantity: this.value })
+        }).then(() => updateCart());
+      });
+    });
+
+    document.querySelectorAll('.remove-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const id = this.dataset.id;
+        fetch('/cart/remove/' + id, { method: 'POST' })
+          .then(() => location.reload());
+      });
+    });
+
+    function checkout() {
+      alert('Thank you! Our team will contact you soon with checkout details.');
+    }
+
+    updateCart();
+  </script>
+</body>
+</html>
