@@ -68,10 +68,36 @@
   <section class="apartment-details-section">
     <div class="container">
       <div class="apartment-details-container">
+        <!-- Media Gallery -->
         <div class="apartment-gallery">
-          <img src="<%= apartment.image_url %>" alt="<%= apartment.title %>" class="main-image">
+          <!-- Main Image Display -->
+          <div class="main-media">
+            <img id="mainImage" src="<%= apartment.image_url %>" alt="<%= apartment.title %>" class="main-image">
+            <% if (apartment.video_url) { %>
+            <div class="video-overlay" onclick="openVideoModal()">
+              <div class="play-button">▶</div>
+              <span class="video-badge">VIDEO</span>
+            </div>
+            <% } %>
+          </div>
+
+          <!-- Media Thumbnails -->
           <div class="gallery-thumbs">
-            <img src="<%= apartment.image_url %>" alt="Photo 1" class="thumb">
+            <!-- Image Thumbnail -->
+            <div class="thumb-item active" onclick="changeMedia(this, '<%= apartment.image_url %>', 'image')">
+              <img src="<%= apartment.image_url %>" alt="Photo" class="thumb">
+              <span class="media-type">📷</span>
+            </div>
+            <!-- Video Thumbnail (if exists) -->
+            <% if (apartment.video_url) { %>
+            <div class="thumb-item" onclick="changeMedia(this, '<%= apartment.video_url %>', 'video')">
+              <svg class="thumb-video" viewBox="0 0 100 100">
+                <rect width="100" height="100" fill="#f0f0f0"/>
+                <polygon points="35,25 35,75 75,50" fill="#17a2b8"/>
+              </svg>
+              <span class="media-type">🎬</span>
+            </div>
+            <% } %>
           </div>
         </div>
 
@@ -271,6 +297,112 @@
     document.getElementById('inquireBtn').addEventListener('click', function() {
       alert('Thank you for your interest! Our team will contact you soon.');
     });
+
+    // === MEDIA GALLERY FUNCTIONS ===
+    
+    // Store current media state
+    let currentMediaType = 'image';
+    let currentVideoUrl = '<%= apartment.video_url || "" %>';
+
+    // Change media display
+    function changeMedia(element, url, type) {
+      // Update active thumbnail
+      document.querySelectorAll('.thumb-item').forEach(item => item.classList.remove('active'));
+      element.classList.add('active');
+
+      // Update main display
+      const mainMedia = document.querySelector('.main-media');
+      
+      if (type === 'image') {
+        document.getElementById('mainImage').src = url;
+        document.getElementById('mainImage').style.display = 'block';
+        const overlay = mainMedia.querySelector('.video-overlay');
+        if (overlay) overlay.style.display = currentVideoUrl ? 'flex' : 'none';
+        currentMediaType = 'image';
+      } else if (type === 'video') {
+        document.getElementById('mainImage').style.display = 'none';
+        if (!mainMedia.querySelector('.video-overlay')) {
+          const overlay = document.createElement('div');
+          overlay.className = 'video-overlay';
+          overlay.onclick = openVideoModal;
+          overlay.innerHTML = '<div class="play-button">▶</div><span class="video-badge">VIDEO</span>';
+          mainMedia.appendChild(overlay);
+        }
+        mainMedia.querySelector('.video-overlay').style.display = 'flex';
+        currentMediaType = 'video';
+      }
+    }
+
+    // Open video modal
+    function openVideoModal() {
+      if (!currentVideoUrl) return;
+      
+      const modal = document.getElementById('videoModal');
+      const videoFrame = document.getElementById('videoFrame');
+      
+      // Extract YouTube video ID from URL
+      const youtubeId = extractYouTubeId(currentVideoUrl);
+      if (youtubeId) {
+        videoFrame.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1`;
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    // Close video modal
+    function closeVideoModal() {
+      const modal = document.getElementById('videoModal');
+      const videoFrame = document.getElementById('videoFrame');
+      modal.style.display = 'none';
+      videoFrame.src = ''; // Stop video playback
+      document.body.style.overflow = 'auto';
+    }
+
+    // Extract YouTube video ID from various URL formats
+    function extractYouTubeId(url) {
+      if (!url) return null;
+      
+      // Format: https://youtube.com/watch?v=ID
+      const match1 = url.match(/youtube\.com\/watch\?v=([^&]+)/);
+      if (match1) return match1[1];
+      
+      // Format: https://youtu.be/ID
+      const match2 = url.match(/youtu\.be\/([^?]+)/);
+      if (match2) return match2[1];
+      
+      // Format: https://www.youtube.com/embed/ID
+      const match3 = url.match(/embed\/([^?]+)/);
+      if (match3) return match3[1];
+      
+      return null;
+    }
+
+    // Close modal on outside click
+    document.addEventListener('DOMContentLoaded', function() {
+      const modal = document.getElementById('videoModal');
+      if (modal) {
+        modal.addEventListener('click', function(e) {
+          if (e.target === modal) {
+            closeVideoModal();
+          }
+        });
+      }
+      
+      // Close on Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeVideoModal();
+        }
+      });
+    });
   </script>
+
+  <!-- Video Modal -->
+  <div id="videoModal" class="video-modal">
+    <div class="video-modal-content">
+      <button class="video-modal-close" onclick="closeVideoModal()">&times;</button>
+      <iframe id="videoFrame" class="video-iframe" width="100%" height="100%" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+  </div>
 </body>
 </html>
