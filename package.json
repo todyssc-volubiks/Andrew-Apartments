@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "init-db": "node db/init.js"
+    "init-db": "node db/init.js",
+    "build": "node build.js",
+    "test": "echo \"No tests configured yet\" && exit 0"
   },
   "dependencies": {
     "express": "^4.18.2",
