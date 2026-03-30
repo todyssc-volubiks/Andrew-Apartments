@@ -88,6 +88,12 @@
             <p class="price-subtitle">
               <% if (apartment.category === 'Rent') { %>per month<% } else if (apartment.category === 'Serviced') { %>per night<% } else { %>asking price<% } %>
             </p>
+            <% if (apartment.inventoryCount) { %>
+            <div class="inventory-status">
+              <span class="inventory-icon">✓</span>
+              <span class="inventory-text"><%= apartment.inventoryCount %> unit<%= apartment.inventoryCount !== 1 ? 's' : '' %> available</span>
+            </div>
+            <% } %>
           </div>
 
           <div class="features-grid">

@@ -54,6 +54,9 @@
             <div class="apartment-image">
               <img src="<%= apt.image_url %>" alt="<%= apt.title %>">
               <span class="category-badge"><%= apt.category %></span>
+              <% if (apt.inventoryCount) { %>
+              <span class="inventory-badge"><%= apt.inventoryCount %> Available</span>
+              <% } %>
             </div>
             <div class="apartment-info">
               <h3><%= apt.title %></h3>

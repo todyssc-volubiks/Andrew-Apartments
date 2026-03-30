@@ -1,0 +1,37 @@
+[
+  {
+    "Title": "Royal Penthouse",
+    "Category": "Rent",
+    "Available": 3,
+    "Price": 5000,
+    "Location": "Downtown"
+  },
+  {
+    "Title": "Modern Studio",
+    "Category": "Rent",
+    "Available": 8,
+    "Price": 1200,
+    "Location": "Midtown"
+  },
+  {
+    "Title": "Luxury Mansion",
+    "Category": "Sales",
+    "Available": 1,
+    "Price": 850000,
+    "Location": "Uptown"
+  },
+  {
+    "Title": "Garden Apartment",
+    "Category": "Serviced",
+    "Available": 5,
+    "Price": 1800,
+    "Location": "Riverside"
+  },
+  {
+    "Title": "Beach House",
+    "Category": "Sales",
+    "Available": 2,
+    "Price": 650000,
+    "Location": "Coastal"
+  }
+]

@@ -8,14 +8,16 @@
     "dev": "nodemon server.js",
     "init-db": "node db/init.js",
     "build": "node build.js",
+    "sync-inventory": "node scripts/sync-inventory.js",
     "test": "echo \"No tests configured yet\" && exit 0"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "sqlite3": "^5.1.6",
-    "ejs": "^3.1.9",
     "body-parser": "^1.20.2",
-    "express-session": "^1.17.3"
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "sqlite3": "^5.1.6",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
