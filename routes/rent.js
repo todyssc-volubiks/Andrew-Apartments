@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db/database');
+const { generateSeoMetadata } = require('../utils/socialShare');
 
 // Rent apartments listing
 router.get('/', (req, res) => {
@@ -20,7 +21,9 @@ router.get('/:id', (req, res) => {
     if (err || !apartment) {
       return res.status(404).render('404');
     }
-    res.render('apartment-details', { apartment, category: 'Rent', title: apartment.title });
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    const seoData = generateSeoMetadata(apartment, baseUrl);
+    res.render('apartment-details', { apartment, category: 'Rent', title: apartment.title, shareUrls: seoData.shareUrls, seoData });
   });
 });
 
